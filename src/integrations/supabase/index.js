@@ -69,7 +69,6 @@ export const useAddEventSignup = () => {
     });
 };
 
-// Hooks for Event
 export const useEvents = () => useQuery({
     queryKey: ['events'],
     queryFn: () => fromSupabase(supabase.from('events').select('*')),
@@ -78,6 +77,26 @@ export const useAddEvent = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (newEvent) => fromSupabase(supabase.from('events').insert([newEvent])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('events');
+        },
+    });
+};
+
+export const useDeleteEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => fromSupabase(supabase.from('events').delete().eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('events');
+        },
+    });
+};
+
+export const useUpdateEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (event) => fromSupabase(supabase.from('events').update(event).eq('id', event.id)),
         onSuccess: () => {
             queryClient.invalidateQueries('events');
         },
