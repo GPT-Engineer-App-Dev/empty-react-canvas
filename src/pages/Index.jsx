@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Container, VStack, Button, Input, Box, Text, HStack } from "@chakra-ui/react";
-import { useEvents, useAddEvent, useDeleteEvent, useUpdateEvent } from "../integrations/supabase/index.js";
+import { useEvents, useAddEvent, useDeleteEvent, useUpdateEvent, useLogout } from "../integrations/supabase/index.js";
 
 const Index = () => {
   const { data: events, isLoading, isError } = useEvents();
   const addEvent = useAddEvent();
   const deleteEvent = useDeleteEvent();
   const updateEvent = useUpdateEvent();
+  const logout = useLogout();
 
   const [newEvent, setNewEvent] = useState({ name: "", date: "", description: "" });
   const [editingEvent, setEditingEvent] = useState(null);
@@ -25,11 +26,16 @@ const Index = () => {
     setEditingEvent(null);
   };
 
+  const handleLogout = () => {
+    logout.mutate();
+  };
+
   if (isLoading) return <Text>Loading...</Text>;
   if (isError) return <Text>Error loading events</Text>;
 
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+      <Button onClick={handleLogout} alignSelf="flex-end">Logout</Button>
       <VStack spacing={4}>
         <Box>
           <Input

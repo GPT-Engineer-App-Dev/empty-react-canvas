@@ -174,3 +174,12 @@ export const useLogout = () => {
         },
     });
 };
+
+export const useSession = () => useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw new Error(error.message);
+        return data.session;
+    },
+});
