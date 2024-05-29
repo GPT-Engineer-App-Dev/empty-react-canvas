@@ -1,12 +1,23 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { Container, VStack, Button, Input, Box, Text } from "@chakra-ui/react";
-import { useLogin, useRegister } from "../integrations/supabase/index.js";
+import { useLogin, useRegister, useSession } from "../integrations/supabase/index.js";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const login = useLogin();
   const register = useRegister();
+
+  const { data: session } = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (session) {
+      navigate("/");
+    }
+  }, [session, navigate]);
 
   const handleLogin = () => {
     login.mutate({ email, password });
